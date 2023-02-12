@@ -17,7 +17,18 @@ class RandomChar extends Component {
   state = {
     char: {},
     state: stateMachine.pending,
+    updating: false,
   };
+
+  componentDidMount() {
+    this.getRandomCharacter();
+  }
+
+  componentDidUpdate(_, prevState) {
+    if (this.state.updating !== prevState.updating) {
+      this.getRandomCharacter();
+    }
+  }
 
   getRandomCharacter = async () => {
     const id = Math.floor(Math.random() * (1011400 - 1011000) + 1011000);
@@ -34,9 +45,7 @@ class RandomChar extends Component {
   descriptionNormalize = string => {
     return string.length < 200 ? string : `${string.slice(0, 200)}...`;
   };
-  componentDidMount() {
-    this.getRandomCharacter();
-  }
+
   render() {
     const { state, char } = this.state;
     const {
@@ -55,6 +64,13 @@ class RandomChar extends Component {
             <img
               loading="lazy"
               src={pictureUrl}
+              style={
+                pictureUrl && pictureUrl.includes('image_not_available')
+                  ? {
+                      objectFit: 'contain',
+                    }
+                  : null
+              }
               alt="Random character"
               className="randomchar__img"
             />
@@ -81,7 +97,12 @@ class RandomChar extends Component {
             Do you want to get to know him better?
           </p>
           <p className="randomchar__title">Or choose another one</p>
-          <button className="button button__main">
+          <button
+            className="button button__main"
+            onClick={() =>
+              this.setState(({ updating }) => ({ updating: !updating }))
+            }
+          >
             <div className="inner">try it</div>
           </button>
           <img src={mjolnir} alt="mjolnir" className="randomchar__decoration" />

@@ -9,7 +9,12 @@ class MarvelAPI {
       );
 
       const { data } = await resp.json();
-      return data;
+      console.log('data', data.results);
+      const results = await Promise.all(
+        data.results.map(this._transformResponse)
+      );
+
+      return results;
     } catch (e) {
       console.log(e);
       throw e;
@@ -29,15 +34,18 @@ class MarvelAPI {
     }
   };
 
-  _transformResponse = async res => {
-    const name = res.name;
-    const description =
-      res.description || 'Nothing is known about this character.';
-    const homepage = res.urls[0].url;
-    const wiki = res.urls[1].url;
-    const pictureUrl = `${res.thumbnail.path}.${res.thumbnail.extension}`;
+  _transformResponse = async ({
+    id,
+    thumbnail,
+    name,
+    urls,
+    description = 'Nothing is known about this character.',
+  }) => {
+    const homepage = urls[0].url;
+    const wiki = urls[1].url;
+    const pictureUrl = `${thumbnail.path}.${thumbnail.extension}`;
 
-    return { name, description, homepage, wiki, pictureUrl };
+    return { id, name, description, homepage, wiki, pictureUrl };
   };
 }
 

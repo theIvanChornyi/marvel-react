@@ -1,7 +1,7 @@
 import { ClipLoader } from 'react-spinners';
 import './Spinner.scss';
 
-const Spinner = () => {
+const Spinner = ({ style }) => {
   return <ClipLoader className="spinner" color="#9F0013" />;
 };
 
