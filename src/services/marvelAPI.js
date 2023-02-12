@@ -21,10 +21,20 @@ class MarvelAPI {
       );
 
       const { data } = await resp.json();
-      return data;
+      return this._transformResponse(data.results[0]);
     } catch (e) {
       console.log(e);
     }
+  };
+
+  _transformResponse = async res => {
+    const name = res.name;
+    const description = res.description;
+    const homepage = res.urls[0].url;
+    const wiki = res.urls[1].url;
+    const pictureUrl = `${res.thumbnail.path}.${res.thumbnail.extension}`;
+
+    return { name, description, homepage, wiki, pictureUrl };
   };
 }
 
