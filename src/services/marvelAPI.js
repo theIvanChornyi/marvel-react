@@ -12,6 +12,7 @@ class MarvelAPI {
       return data;
     } catch (e) {
       console.log(e);
+      throw e;
     }
   };
   getCharacterByID = async id => {
@@ -24,12 +25,14 @@ class MarvelAPI {
       return this._transformResponse(data.results[0]);
     } catch (e) {
       console.log(e);
+      throw e;
     }
   };
 
   _transformResponse = async res => {
     const name = res.name;
-    const description = res.description;
+    const description =
+      res.description || 'Nothing is known about this character.';
     const homepage = res.urls[0].url;
     const wiki = res.urls[1].url;
     const pictureUrl = `${res.thumbnail.path}.${res.thumbnail.extension}`;
