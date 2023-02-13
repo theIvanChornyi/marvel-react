@@ -17,7 +17,6 @@ class RandomChar extends Component {
   state = {
     char: {},
     state: stateMachine.pending,
-    updating: false,
   };
 
   componentDidMount() {
@@ -67,7 +66,7 @@ class RandomChar extends Component {
               style={
                 pictureUrl && pictureUrl.includes('image_not_available')
                   ? {
-                      objectFit: 'contain',
+                      objectFit: 'unset',
                     }
                   : null
               }
@@ -99,9 +98,7 @@ class RandomChar extends Component {
           <p className="randomchar__title">Or choose another one</p>
           <button
             className="button button__main"
-            onClick={() =>
-              this.setState(({ updating }) => ({ updating: !updating }))
-            }
+            onClick={() => this.getRandomCharacter()}
           >
             <div className="inner">try it</div>
           </button>

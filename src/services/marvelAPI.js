@@ -9,7 +9,6 @@ class MarvelAPI {
       );
 
       const { data } = await resp.json();
-      console.log('data', data.results);
       const results = await Promise.all(
         data.results.map(this._transformResponse)
       );
@@ -40,12 +39,21 @@ class MarvelAPI {
     name,
     urls,
     description = 'Nothing is known about this character.',
+    comics,
   }) => {
     const homepage = urls[0].url;
     const wiki = urls[1].url;
     const pictureUrl = `${thumbnail.path}.${thumbnail.extension}`;
 
-    return { id, name, description, homepage, wiki, pictureUrl };
+    return {
+      id,
+      name,
+      description,
+      homepage,
+      wiki,
+      pictureUrl,
+      comics: comics.items,
+    };
   };
 }
 

@@ -26,13 +26,13 @@ class CharList extends Component {
 
   selectChar = id => {
     this.setState({ active: id });
+    this.props.updateCharId(id);
   };
 
   getChars = async () => {
     this.setState({ state: stateMachine.load });
     try {
       const chars = await MarvelAPI.getCharacters();
-      console.log(chars);
       this.setState({ chars });
       this.setState({ state: stateMachine.success });
     } catch (e) {
@@ -71,7 +71,7 @@ class CharList extends Component {
                     style={
                       pictureUrl && pictureUrl.includes('image_not_available')
                         ? {
-                            objectFit: 'contain',
+                            objectFit: 'unset',
                           }
                         : null
                     }
