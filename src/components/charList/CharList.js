@@ -4,6 +4,8 @@ import Spinner from '../spinner/Spinner';
 import Error from '../error/Error';
 import { clsx } from 'clsx';
 
+import debounce from 'lodash.debounce';
+
 import MarvelAPI from '../../services/marvelAPI';
 
 const stateMachine = {
@@ -26,12 +28,33 @@ class CharList extends Component {
   componentDidMount() {
     this.setState({ offset: 0 });
     this.getChars();
+
+    window.addEventListener(
+      'scroll',
+      debounce(this.onScrollDown.bind(this), 300)
+    );
   }
 
   componentDidUpdate(_, prevState) {
     if (this.state.offset !== prevState.offset && !this.state.isEnd) {
       this.uploadNewChars(this.state.offset);
     }
+  }
+
+  onScrollDown() {
+    if (
+      this.state.state === stateMachine.success &&
+      window.innerHeight + window.pageYOffset >= document.body.offsetHeight - 2
+    ) {
+      this.changeOffset();
+    }
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener(
+      'scroll',
+      debounce(this.onScrollDown.bind(this), 300)
+    );
   }
 
   selectChar = id => {
