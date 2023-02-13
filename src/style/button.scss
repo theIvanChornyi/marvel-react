@@ -44,6 +44,7 @@
             transform: rotate(180deg);
             transition: none;
         }
+        
     }
     &__main, &__secondary {
         &:hover {
@@ -87,5 +88,8 @@
     }
     &:hover {
         transform: translateY(-5px);
+    }
+    &:disabled {
+        filter: grayscale(0.5);
     }
 }

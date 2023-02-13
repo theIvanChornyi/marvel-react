@@ -2,10 +2,10 @@ const { REACT_APP_MARVEL_API_PUBLIC_KEY } = process.env;
 
 class MarvelAPI {
   BASE_URL = 'https://gateway.marvel.com:443/v1/public';
-  getCharacters = async () => {
+  getCharacters = async (offset = 0) => {
     try {
       const resp = await fetch(
-        `${this.BASE_URL}/characters?apikey=${REACT_APP_MARVEL_API_PUBLIC_KEY}&limit=9`
+        `${this.BASE_URL}/characters?apikey=${REACT_APP_MARVEL_API_PUBLIC_KEY}&limit=9&offset=${offset}`
       );
 
       const { data } = await resp.json();
