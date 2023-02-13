@@ -36,7 +36,7 @@ class CharInfo extends Component {
     this.setState({ state: stateMachine.load });
     try {
       const char = await MarvelAPI.getCharacterByID(id);
-      await this.setState({ char });
+      this.setState({ char });
       this.setState({ state: stateMachine.success });
     } catch (e) {
       console.log(e);
