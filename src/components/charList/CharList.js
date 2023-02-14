@@ -1,5 +1,5 @@
 import './charList.scss';
-import { Component } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import Spinner from '../spinner/Spinner';
 import Error from '../error/Error';
@@ -16,109 +16,99 @@ const stateMachine = {
   rejected: 'rejected',
 };
 
-class CharList extends Component {
-  state = {
-    chars: [],
-    state: stateMachine.pending,
-    active: null,
-    uploadNew: stateMachine.pending,
-    offset: 0,
-    isEnd: false,
-  };
+const CharList = ({ updateCharId }) => {
+  const [chars, setChars] = useState([]);
+  const [state, setState] = useState(stateMachine.pending);
+  const [active, setActive] = useState(null);
 
-  componentDidMount() {
-    this.setState({ offset: 0 });
-    this.getChars();
+  const [uploadNew, setUploadNew] = useState(stateMachine.pending);
+  const [offset, setOffset] = useState(0);
+  const [isEnd, setIsEnd] = useState(false);
 
-    window.addEventListener(
-      'scroll',
-      debounce(this.onScrollDown.bind(this), 300)
-    );
-  }
+  useEffect(() => {
+    getChars();
+    window.addEventListener('scroll', debounce(onScrollDown, 300));
+    return () => {
+      window.removeEventListener('scroll', debounce(onScrollDown, 300));
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
-  componentDidUpdate(_, prevState) {
-    if (this.state.offset !== prevState.offset && !this.state.isEnd) {
-      this.uploadNewChars(this.state.offset);
+  useEffect(() => {
+    if (offset > 0) {
+      uploadNewChars(offset);
     }
-  }
+  }, [offset]);
 
-  onScrollDown() {
+  const onScrollDown = () => {
     if (
-      this.state.state === stateMachine.success &&
-      window.innerHeight + window.pageYOffset >= document.body.offsetHeight - 2
+      window.innerHeight + window.pageYOffset >=
+      document.body.offsetHeight - 2
     ) {
-      this.changeOffset();
+      changeOffset();
     }
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener(
-      'scroll',
-      debounce(this.onScrollDown.bind(this), 300)
-    );
-  }
-
-  selectChar = id => {
-    this.setState({ active: id });
-    this.props.updateCharId(id);
   };
 
-  changeOffset = () => {
-    this.setState(({ offset }) => ({ offset: (offset += 9) }));
-  };
+  const selectChar = useCallback(
+    id => {
+      setActive(id);
+      updateCharId(id);
+    },
+    [updateCharId]
+  );
 
-  getChars = async () => {
-    this.setState({ state: stateMachine.load });
+  const changeOffset = useCallback(() => {
+    setOffset(p => (p += 9));
+  }, []);
+
+  const getChars = async () => {
+    setState(stateMachine.load);
     try {
       const chars = await MarvelAPI.getCharacters();
-      this.setState({ chars });
-      this.setState({ state: stateMachine.success });
+      setChars(chars);
+      setState(stateMachine.success);
     } catch (e) {
       console.log(e);
-      this.setState({ state: stateMachine.rejected });
+      setState(stateMachine.rejected);
     }
   };
 
-  uploadNewChars = async offset => {
-    this.setState({ uploadNew: stateMachine.load });
+  const uploadNewChars = async offset => {
+    setUploadNew(stateMachine.load);
     try {
       const newChars = await MarvelAPI.getCharacters(offset);
-      if (newChars.length < 9) this.setState({ isEnd: true });
-
-      this.setState(({ chars }) => ({ chars: [...chars, ...newChars] }));
-      this.setState({ uploadNew: stateMachine.success });
+      if (newChars.length < 9) setIsEnd(true);
+      setChars(chars => [...chars, ...newChars]);
+      setUploadNew(stateMachine.success);
     } catch (e) {
       console.log(e);
-      this.setState({ uploadNew: stateMachine.rejected });
+      setUploadNew(stateMachine.rejected);
     }
   };
 
-  render() {
-    const { state, chars, active, isEnd, uploadNew } = this.state;
-    return (
-      <>
-        {state === stateMachine.load && (
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <Spinner />
-          </div>
-        )}
-        {state === stateMachine.rejected && <Error />}
-        {state === stateMachine.success && (
-          <View
-            {...{
-              chars,
-              active,
-              selectChar: this.selectChar,
-              changeOffset: this.changeOffset,
-              isEnd,
-              uploadNew,
-            }}
-          />
-        )}
-      </>
-    );
-  }
-}
+  return (
+    <>
+      {state === stateMachine.load && (
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <Spinner />
+        </div>
+      )}
+      {state === stateMachine.rejected && <Error />}
+      {state === stateMachine.success && (
+        <View
+          {...{
+            chars,
+            active,
+            selectChar: selectChar,
+            changeOffset: changeOffset,
+            isEnd,
+            uploadNew,
+          }}
+        />
+      )}
+    </>
+  );
+};
 
 const View = ({
   chars,

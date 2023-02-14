@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import './charInfo.scss';
@@ -15,52 +15,39 @@ const stateMachine = {
   rejected: 'rejected',
 };
 
-class CharInfo extends Component {
-  state = {
-    char: null,
-    state: stateMachine.pending,
-  };
+const CharInfo = ({ charId }) => {
+  const [char, setChar] = useState(null);
+  const [state, setState] = useState(stateMachine.pending);
 
-  componentDidMount() {
-    if (this.props.charId) {
-      this.getCharInfo(this.props.charId);
-    }
-  }
+  useEffect(() => {
+    charId && getCharInfo(charId);
+  }, [charId]);
 
-  componentDidUpdate(prevProp) {
-    if (prevProp.charId !== this.props.charId) {
-      this.getCharInfo(this.props.charId);
-    }
-  }
-
-  getCharInfo = async id => {
-    this.setState({ state: stateMachine.load });
+  const getCharInfo = async id => {
+    setState(stateMachine.load);
     try {
       const char = await MarvelAPI.getCharacterByID(id);
-      this.setState({ char });
-      this.setState({ state: stateMachine.success });
+      setChar(char);
+      setState(stateMachine.success);
     } catch (e) {
       console.log(e);
-      this.setState({ state: stateMachine.rejected });
+      setState(stateMachine.rejected);
     }
   };
 
-  render() {
-    const { state, char } = this.state;
-    return (
-      <div className="char__info">
-        {state === stateMachine.pending && <Skeleton />}
-        {state === stateMachine.load && (
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <Spinner />
-          </div>
-        )}
-        {state === stateMachine.rejected && <Error />}
-        {state === stateMachine.success && <View {...char} />}
-      </div>
-    );
-  }
-}
+  return (
+    <div className="char__info">
+      {state === stateMachine.pending && <Skeleton />}
+      {state === stateMachine.load && (
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <Spinner />
+        </div>
+      )}
+      {state === stateMachine.rejected && <Error />}
+      {state === stateMachine.success && <View {...char} />}
+    </div>
+  );
+};
 
 const View = ({ name, homepage, wiki, description, pictureUrl, comics }) => (
   <>
