@@ -132,7 +132,12 @@ const View = ({
     <ul className="char__grid">
       {chars.map(({ pictureUrl, name, id }) => (
         <li
-          onFocus={() => selectChar(id)}
+          onClick={() => selectChar(id)}
+          onKeyDown={e => {
+            if (e.key === 'Enter') {
+              selectChar(id);
+            }
+          }}
           key={id}
           tabIndex="0"
           className={clsx(
