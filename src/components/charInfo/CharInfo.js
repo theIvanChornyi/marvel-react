@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import PropTypes from 'prop-types';
 
 import './charInfo.scss';
 import Spinner from '../spinner/Spinner';
@@ -108,5 +109,19 @@ const View = ({ name, homepage, wiki, description, pictureUrl, comics }) => (
     )}
   </>
 );
+
+View.propTypes = {
+  name: PropTypes.string,
+  homepage: PropTypes.string,
+  wiki: PropTypes.string,
+  description: PropTypes.string,
+  pictureUrl: PropTypes.string,
+  comics: PropTypes.arrayOf(
+    PropTypes.shape({
+      name: PropTypes.string,
+    })
+  ),
+};
+CharInfo.propTypes = { charId: PropTypes.number };
 
 export default CharInfo;

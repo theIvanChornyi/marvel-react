@@ -1,5 +1,6 @@
 import './charList.scss';
 import { Component } from 'react';
+import PropTypes from 'prop-types';
 import Spinner from '../spinner/Spinner';
 import Error from '../error/Error';
 import { clsx } from 'clsx';
@@ -19,7 +20,7 @@ class CharList extends Component {
   state = {
     chars: [],
     state: stateMachine.pending,
-    active: '',
+    active: null,
     uploadNew: stateMachine.pending,
     offset: 0,
     isEnd: false,
@@ -131,8 +132,9 @@ const View = ({
     <ul className="char__grid">
       {chars.map(({ pictureUrl, name, id }) => (
         <li
-          onClick={() => selectChar(id)}
+          onFocus={() => selectChar(id)}
           key={id}
+          tabIndex="0"
           className={clsx(
             'char__item',
             +id === +active && 'char__item_selected'
@@ -165,5 +167,24 @@ const View = ({
     )}
   </div>
 );
+
+View.propTypes = {
+  chars: PropTypes.arrayOf(
+    PropTypes.shape({
+      pictureUrl: PropTypes.string,
+      name: PropTypes.string,
+      id: PropTypes.number,
+    })
+  ),
+  active: PropTypes.number,
+  selectChar: PropTypes.func,
+  changeOffset: PropTypes.func,
+  uploadNew: PropTypes.string,
+  isEnd: PropTypes.bool,
+};
+
+CharList.propTypes = {
+  updateCharId: PropTypes.func.isRequired,
+};
 
 export default CharList;
