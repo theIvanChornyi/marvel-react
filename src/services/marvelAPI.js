@@ -11,7 +11,7 @@ export const useMarvelAPI = () => {
       `${BASE_URL}/characters?apikey=${REACT_APP_MARVEL_API_PUBLIC_KEY}&limit=9&offset=${offset}`
     );
 
-    return await Promise.all(data.results.map(_transformResponse));
+    return await Promise.all(data.results.map(_transformChar));
   };
 
   const getCharacterByID = async id => {
@@ -19,10 +19,19 @@ export const useMarvelAPI = () => {
       `${BASE_URL}/characters/${id}?apikey=${REACT_APP_MARVEL_API_PUBLIC_KEY}`
     );
 
-    return _transformResponse(data.results[0]);
+    return _transformChar(data.results[0]);
   };
 
-  const _transformResponse = async ({
+  const getComicsData = async (offset = 0) => {
+    const data = await getData(
+      `${BASE_URL}/comics?apikey=${REACT_APP_MARVEL_API_PUBLIC_KEY}&limit=8&offset=${offset}`
+    );
+    console.log(data.results);
+
+    return await Promise.all(data.results.map(_transformComics));
+  };
+
+  const _transformChar = async ({
     id,
     thumbnail,
     name,
@@ -45,5 +54,11 @@ export const useMarvelAPI = () => {
     };
   };
 
-  return { getCharacterByID, getCharacters, state, error };
+  const _transformComics = async ({ thumbnail, prices, id, title }) => {
+    const price = prices[0].price;
+    const pictureUrl = `${thumbnail.path}.${thumbnail.extension}`;
+    return { id, title, price, pictureUrl };
+  };
+
+  return { getComicsData, getCharacterByID, getCharacters, state, error };
 };

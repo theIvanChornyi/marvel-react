@@ -1,11 +1,5 @@
 import { useCallback, useState } from 'react';
-
-const stateMachine = {
-  pending: 'pending',
-  load: 'load',
-  success: 'success',
-  rejected: 'rejected',
-};
+import { stateMachine } from '../helpers/stateMachine';
 
 export const useHttp = () => {
   const [state, setState] = useState(stateMachine.pending);

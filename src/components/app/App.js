@@ -1,20 +1,19 @@
-import AppHeader from '../appHeader/AppHeader';
-import RandomChar from '../randomChar/RandomChar';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import ComicsPage from '../../pages/comics/ComicsPage';
+import HomePage from '../../pages/home/HomePage';
 
-import decoration from '../../resources/img/vision.png';
-import ErrorBoundary from '../errorBoundary/ErrorBoundary';
-import CharContent from '../charContent/CharContent';
+import AppHeader from '../appHeader/AppHeader';
 
 const App = () => {
   return (
     <div className="app">
       <AppHeader />
       <main>
-        <ErrorBoundary>
-          <RandomChar />
-        </ErrorBoundary>
-        <CharContent />
-        <img className="bg-decoration" src={decoration} alt="vision" />
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/comics" element={<ComicsPage />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
       </main>
     </div>
   );

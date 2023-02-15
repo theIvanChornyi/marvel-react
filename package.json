@@ -10,8 +10,9 @@
     "clsx": "^1.2.1",
     "lodash.debounce": "^4.0.8",
     "prop-types": "^15.8.1",
-    "react": "^17.0.2",
-    "react-dom": "^17.0.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-router-dom": "^6.8.1",
     "react-scripts": "4.0.3",
     "react-spinners": "^0.13.8",
     "web-vitals": "^1.0.1"
@@ -21,8 +22,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "predeploy":"npm run build",
-    "deploy":"netlify deploy -p"
+    "predeploy": "npm run build",
+    "deploy": "netlify deploy -p"
   },
   "eslintConfig": {
     "extends": [

@@ -1,19 +1,14 @@
-import './charList.scss';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import debounce from 'lodash.debounce';
 import PropTypes from 'prop-types';
-import Spinner from '../spinner/Spinner';
-import Error from '../error/Error';
 import { clsx } from 'clsx';
 
-import debounce from 'lodash.debounce';
-import { useMarvelAPI } from '../../services/marvelAPI';
+import Spinner from '../spinner/Spinner';
+import Error from '../error/Error';
 
-const stateMachine = {
-  pending: 'pending',
-  load: 'load',
-  success: 'success',
-  rejected: 'rejected',
-};
+import { useMarvelAPI } from '../../services/marvelAPI';
+import { stateMachine } from '../../helpers/stateMachine';
+import './charList.scss';
 
 const CharList = ({ updateCharId }) => {
   const { state, getCharacters } = useMarvelAPI();
@@ -38,6 +33,7 @@ const CharList = ({ updateCharId }) => {
     if (offset > 0) {
       uploadNewChars(offset);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [offset]);
 
   const onScrollDown = () => {
@@ -137,7 +133,7 @@ const View = ({ chars, active, selectChar, changeOffset, state, isEnd }) => {
         <div className="char__name">{name}</div>
       </li>
     ));
-  }, [chars, active]);
+  }, [chars, active, selectChar]);
 
   return (
     <div className="char__list">

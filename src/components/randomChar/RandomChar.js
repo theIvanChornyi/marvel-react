@@ -1,16 +1,11 @@
+import { useEffect, useState } from 'react';
+
 import './randomChar.scss';
 import mjolnir from '../../resources/img/mjolnir.png';
-import { useEffect, useState } from 'react';
 import Spinner from '../spinner/Spinner';
 import Error from '../error/Error';
 import { useMarvelAPI } from '../../services/marvelAPI';
-
-const stateMachine = {
-  pending: 'pending',
-  load: 'load',
-  success: 'success',
-  rejected: 'rejected',
-};
+import { stateMachine } from '../../helpers/stateMachine';
 
 const RandomChar = () => {
   const { getCharacterByID, state } = useMarvelAPI();
@@ -18,6 +13,7 @@ const RandomChar = () => {
 
   useEffect(() => {
     getRandomCharacter();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getRandomCharacter = async () => {

@@ -7,12 +7,7 @@ import Error from '../error/Error';
 import Skeleton from '../skeleton/Skeleton';
 import { useMarvelAPI } from '../../services/marvelAPI';
 
-const stateMachine = {
-  pending: 'pending',
-  load: 'load',
-  success: 'success',
-  rejected: 'rejected',
-};
+import { stateMachine } from '../../helpers/stateMachine';
 
 const CharInfo = ({ charId }) => {
   const { getCharacterByID, state } = useMarvelAPI();
@@ -21,6 +16,7 @@ const CharInfo = ({ charId }) => {
 
   useEffect(() => {
     charId && getCharInfo(charId);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [charId]);
 
   const getCharInfo = async id => {
