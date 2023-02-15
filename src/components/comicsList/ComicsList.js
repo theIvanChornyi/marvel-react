@@ -1,71 +1,13 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { useMarvelAPI } from '../../services/marvelAPI';
+import PropTypes from 'prop-types';
+
 import { stateMachine } from '../../helpers/stateMachine';
 import './comicsList.scss';
 import Spinner from '../spinner/Spinner';
 import Error from '../error/Error';
-import debounce from 'lodash.debounce';
 
-const ComicsList = () => {
-  const { getComicsData, state, error } = useMarvelAPI();
-  const [comics, setComics] = useState([]);
-
-  const [uploadFirs, setUploadFirst] = useState(stateMachine.pending);
-  const [offset, setOffset] = useState(0);
-  const [isEnd, setIsEnd] = useState(false);
-
-  useEffect(() => {
-    getComics();
-    window.addEventListener('scroll', debounce(onScrollDown, 300));
-    return () => {
-      window.removeEventListener('scroll', debounce(onScrollDown, 300));
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const getComics = async () => {
-    setUploadFirst(stateMachine.load);
-
-    try {
-      const resp = await getComicsData();
-      setComics(resp);
-      setUploadFirst(stateMachine.success);
-    } catch (error) {
-      setUploadFirst(stateMachine.rejected);
-    }
-  };
-
-  useEffect(() => {
-    if (offset > 0) {
-      uploadNewComics(offset);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [offset]);
-
-  const onScrollDown = () => {
-    if (
-      window.innerHeight + window.pageYOffset >=
-      document.body.offsetHeight - 2
-    ) {
-      changeOffset();
-    }
-  };
-
-  const uploadNewComics = async offset => {
-    try {
-      const newComics = await getComicsData(offset);
-      if (newComics.length < 8) setIsEnd(true);
-      setComics(comics => [...comics, ...newComics]);
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  const changeOffset = useCallback(() => {
-    setOffset(p => (p += 8));
-  }, []);
-
+const ComicsList = ({ comics, uploadFirs, isEnd, changeOffset, state }) => {
   const comicsItems = useMemo(() => {
     return comics.map(({ id, title, price, pictureUrl }) => (
       <li className="comics__item" key={id}>
@@ -76,7 +18,7 @@ const ComicsList = () => {
             className="comics__item-img"
           />
           <div className="comics__item-name">{title}</div>
-          <div className="comics__item-price">{price}$</div>
+          <div className="comics__item-price">{price}</div>
         </Link>
       </li>
     ));
@@ -85,7 +27,13 @@ const ComicsList = () => {
   return (
     <div className="comics__list">
       {uploadFirs === stateMachine.load && (
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            marginTop: '25%',
+          }}
+        >
           <Spinner />
         </div>
       )}
@@ -106,6 +54,21 @@ const ComicsList = () => {
       )}
     </div>
   );
+};
+
+ComicsList.propTypes = {
+  comics: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number,
+      title: PropTypes.string,
+      price: PropTypes.number,
+      pictureUrl: PropTypes.string,
+    })
+  ),
+  uploadFirs: PropTypes.string,
+  isEnd: PropTypes.bool,
+  changeOffset: PropTypes.func,
+  state: PropTypes.string,
 };
 
 export default ComicsList;

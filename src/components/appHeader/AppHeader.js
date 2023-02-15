@@ -29,7 +29,6 @@ const AppHeader = () => {
               style={({ isActive }) => ({
                 color: isActive ? '#9F0013' : 'inherit',
               })}
-              end
             >
               Comics
             </NavLink>

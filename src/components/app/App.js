@@ -1,8 +1,10 @@
-import { Routes, Route, Navigate } from 'react-router-dom';
-import ComicsPage from '../../pages/comics/ComicsPage';
-import HomePage from '../../pages/home/HomePage';
+import { Routes, Route } from 'react-router-dom';
+import ComicsPage from '../../pages/comicsPage/ComicsPage';
+import Page404 from '../../pages/Page404/Page404';
+import HomePage from '../../pages/homePage/HomePage';
 
 import AppHeader from '../appHeader/AppHeader';
+import SingleComicPage from '../../pages/singleComicPage/SingleComicPage';
 
 const App = () => {
   return (
@@ -12,7 +14,9 @@ const App = () => {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/comics" element={<ComicsPage />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="/comics/:id" element={<SingleComicPage />} />
+
+          <Route path="*" element={<Page404 />} />
         </Routes>
       </main>
     </div>

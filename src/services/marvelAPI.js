@@ -11,7 +11,7 @@ export const useMarvelAPI = () => {
       `${BASE_URL}/characters?apikey=${REACT_APP_MARVEL_API_PUBLIC_KEY}&limit=9&offset=${offset}`
     );
 
-    return await Promise.all(data.results.map(_transformChar));
+    return await Promise.all(data?.results.map(_transformChar));
   };
 
   const getCharacterByID = async id => {
@@ -19,16 +19,23 @@ export const useMarvelAPI = () => {
       `${BASE_URL}/characters/${id}?apikey=${REACT_APP_MARVEL_API_PUBLIC_KEY}`
     );
 
-    return _transformChar(data.results[0]);
+    return _transformChar(data?.results[0]);
   };
 
   const getComicsData = async (offset = 0) => {
     const data = await getData(
       `${BASE_URL}/comics?apikey=${REACT_APP_MARVEL_API_PUBLIC_KEY}&limit=8&offset=${offset}`
     );
-    console.log(data.results);
 
-    return await Promise.all(data.results.map(_transformComics));
+    return await Promise.all(data?.results.map(_transformComics));
+  };
+
+  const getComicById = async id => {
+    const data = await getData(
+      `${BASE_URL}/comics/${id}?apikey=${REACT_APP_MARVEL_API_PUBLIC_KEY}`
+    );
+    console.log(data);
+    return _transformComics(data?.results[0]);
   };
 
   const _transformChar = async ({
@@ -54,11 +61,35 @@ export const useMarvelAPI = () => {
     };
   };
 
-  const _transformComics = async ({ thumbnail, prices, id, title }) => {
+  const _transformComics = async ({
+    thumbnail,
+    prices,
+    id,
+    title,
+    pageCount,
+    description,
+    textObjects,
+  }) => {
     const price = prices[0].price;
     const pictureUrl = `${thumbnail.path}.${thumbnail.extension}`;
-    return { id, title, price, pictureUrl };
+    const language = textObjects[0]?.language;
+    return {
+      id,
+      title,
+      price: price ? `${price} $` : 'Price is unknown',
+      pictureUrl,
+      pageCount: pageCount ? `${pageCount} pages` : 'Number of pages unknown',
+      language: language ? `Language: ${language}` : 'Language is unknown',
+      description: description ? description : 'Description is missing',
+    };
   };
 
-  return { getComicsData, getCharacterByID, getCharacters, state, error };
+  return {
+    getComicsData,
+    getCharacterByID,
+    getComicById,
+    getCharacters,
+    state,
+    error,
+  };
 };

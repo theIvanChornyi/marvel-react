@@ -83,7 +83,13 @@ const CharList = ({ updateCharId }) => {
   return (
     <>
       {uploadFirs === stateMachine.load && (
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'center',
+            marginTop: '25%',
+          }}
+        >
           <Spinner />
         </div>
       )}
