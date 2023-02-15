@@ -5,8 +5,7 @@ import './charInfo.scss';
 import Spinner from '../spinner/Spinner';
 import Error from '../error/Error';
 import Skeleton from '../skeleton/Skeleton';
-
-import MarvelAPI from '../../services/marvelAPI';
+import { useMarvelAPI } from '../../services/marvelAPI';
 
 const stateMachine = {
   pending: 'pending',
@@ -16,22 +15,20 @@ const stateMachine = {
 };
 
 const CharInfo = ({ charId }) => {
+  const { getCharacterByID, state } = useMarvelAPI();
+
   const [char, setChar] = useState(null);
-  const [state, setState] = useState(stateMachine.pending);
 
   useEffect(() => {
     charId && getCharInfo(charId);
   }, [charId]);
 
   const getCharInfo = async id => {
-    setState(stateMachine.load);
     try {
-      const char = await MarvelAPI.getCharacterByID(id);
+      const char = await getCharacterByID(id);
       setChar(char);
-      setState(stateMachine.success);
     } catch (e) {
       console.log(e);
-      setState(stateMachine.rejected);
     }
   };
 
@@ -69,10 +66,20 @@ const View = ({ name, homepage, wiki, description, pictureUrl, comics }) => (
       <div>
         <div className="char__info-name">{name}</div>
         <div className="char__btns">
-          <a href={homepage} className="button button__main">
+          <a
+            href={homepage}
+            target="_blank"
+            rel="noreferrer"
+            className="button button__main"
+          >
             <div className="inner">homepage</div>
           </a>
-          <a href={wiki} className="button button__secondary">
+          <a
+            href={wiki}
+            target="_blank"
+            rel="noreferrer"
+            className="button button__secondary"
+          >
             <div className="inner">Wiki</div>
           </a>
         </div>
@@ -81,7 +88,7 @@ const View = ({ name, homepage, wiki, description, pictureUrl, comics }) => (
     <div className="char__descr">{description}</div>
 
     <div className="char__comics">Comics:</div>
-    {comics.length > 0 ? (
+    {comics?.length > 0 ? (
       <ul className="char__comics-list">
         {[...comics]
           .map(({ name }, i) => (

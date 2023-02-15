@@ -1,39 +1,28 @@
+import { useHttp } from '../hooks/useHttp';
+
 const { REACT_APP_MARVEL_API_PUBLIC_KEY } = process.env;
 
-class MarvelAPI {
-  BASE_URL = 'https://gateway.marvel.com:443/v1/public';
-  getCharacters = async (offset = 0) => {
-    try {
-      const resp = await fetch(
-        `${this.BASE_URL}/characters?apikey=${REACT_APP_MARVEL_API_PUBLIC_KEY}&limit=9&offset=${offset}`
-      );
+export const useMarvelAPI = () => {
+  const { state, getData, error } = useHttp();
+  const BASE_URL = 'https://gateway.marvel.com:443/v1/public';
 
-      const { data } = await resp.json();
-      const results = await Promise.all(
-        data.results.map(this._transformResponse)
-      );
+  const getCharacters = async (offset = 0) => {
+    const data = await getData(
+      `${BASE_URL}/characters?apikey=${REACT_APP_MARVEL_API_PUBLIC_KEY}&limit=9&offset=${offset}`
+    );
 
-      return results;
-    } catch (e) {
-      console.log(e);
-      throw e;
-    }
-  };
-  getCharacterByID = async id => {
-    try {
-      const resp = await fetch(
-        `${this.BASE_URL}/characters/${id}?apikey=${REACT_APP_MARVEL_API_PUBLIC_KEY}`
-      );
-
-      const { data } = await resp.json();
-      return this._transformResponse(data.results[0]);
-    } catch (e) {
-      console.log(e);
-      throw e;
-    }
+    return await Promise.all(data.results.map(_transformResponse));
   };
 
-  _transformResponse = async ({
+  const getCharacterByID = async id => {
+    const data = await getData(
+      `${BASE_URL}/characters/${id}?apikey=${REACT_APP_MARVEL_API_PUBLIC_KEY}`
+    );
+
+    return _transformResponse(data.results[0]);
+  };
+
+  const _transformResponse = async ({
     id,
     thumbnail,
     name,
@@ -55,6 +44,6 @@ class MarvelAPI {
       comics: comics.items,
     };
   };
-}
 
-export default new MarvelAPI();
+  return { getCharacterByID, getCharacters, state, error };
+};

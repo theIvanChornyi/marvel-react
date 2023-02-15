@@ -3,8 +3,7 @@ import mjolnir from '../../resources/img/mjolnir.png';
 import { useEffect, useState } from 'react';
 import Spinner from '../spinner/Spinner';
 import Error from '../error/Error';
-
-import MarvelAPI from '../../services/marvelAPI';
+import { useMarvelAPI } from '../../services/marvelAPI';
 
 const stateMachine = {
   pending: 'pending',
@@ -14,8 +13,8 @@ const stateMachine = {
 };
 
 const RandomChar = () => {
+  const { getCharacterByID, state } = useMarvelAPI();
   const [char, setChar] = useState(null);
-  const [state, setState] = useState(stateMachine.pending);
 
   useEffect(() => {
     getRandomCharacter();
@@ -23,15 +22,11 @@ const RandomChar = () => {
 
   const getRandomCharacter = async () => {
     const id = Math.floor(Math.random() * (1011400 - 1011000) + 1011000);
-    setState(stateMachine.load);
 
     try {
-      const char = await MarvelAPI.getCharacterByID(id);
+      const char = await getCharacterByID(id);
       setChar(char);
-      setState(stateMachine.success);
-    } catch (error) {
-      setState(stateMachine.rejected);
-    }
+    } catch (error) {}
   };
 
   const descriptionNormalize = string => {
@@ -42,7 +37,7 @@ const RandomChar = () => {
     <div className="randomchar">
       {state === stateMachine.load && <Spinner />}
       {state === stateMachine.rejected && <Error />}
-      {state === stateMachine.success && (
+      {state === stateMachine.success && char && (
         <div className="randomchar__block">
           <img
             loading="lazy"
@@ -63,10 +58,20 @@ const RandomChar = () => {
               {descriptionNormalize(char.description)}
             </p>
             <div className="randomchar__btns">
-              <a href={char.homepage} className="button button__main">
+              <a
+                href={char.homepage}
+                target="_blank"
+                rel="noreferrer"
+                className="button button__main"
+              >
                 <div className="inner">homepage</div>
               </a>
-              <a href={char.wiki} className="button button__secondary">
+              <a
+                href={char.wiki}
+                target="_blank"
+                rel="noreferrer"
+                className="button button__secondary"
+              >
                 <div className="inner">Wiki</div>
               </a>
             </div>
