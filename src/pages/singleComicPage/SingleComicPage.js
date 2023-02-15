@@ -12,8 +12,6 @@ const SingleComicPage = () => {
   const { state, getComicById } = useMarvelAPI();
   const [comic, setComic] = useState(null);
 
-  // const [qwe, setQqwe] = useSearchParams();
-
   useEffect(() => {
     getComicsInfo();
     // eslint-disable-next-line react-hooks/exhaustive-deps
