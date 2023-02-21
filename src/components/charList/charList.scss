@@ -29,9 +29,30 @@
             object-fit: cover;
             transform: translate(-15px, -15px);
         }
-        &_selected {
+        &-enter {
             box-shadow: 0 5px 20px $main-color;
             transform: translateY(-8px);
+            transition: box-shadow 250ms ease-in, transform 250ms ease-in;
+        }
+
+        &-enter-active {
+            box-shadow: 0 5px 20px $main-color;
+            transform: translateY(-8px);
+        }
+        &-enter-done {
+            box-shadow: 0 5px 20px $main-color;
+            transform: translateY(-8px);
+        }
+
+        &-exit {
+            box-shadow:none;
+            transform:none;
+            transition: box-shadow 250ms ease-in, transform 250ms ease-in;
+        }
+
+        &-exit-active {
+            box-shadow: none;
+            transform: none;
         }
     }
     &__name {
@@ -40,5 +61,10 @@
         line-height: 29px;
         text-transform: uppercase;
         color: #fff;
+    }
+    &__spinner-box {
+        display: flex;
+        justify-content: center;
+        margin-top: 25%;
     }
 }

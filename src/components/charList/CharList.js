@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import debounce from 'lodash.debounce';
 import PropTypes from 'prop-types';
-import { clsx } from 'clsx';
 
 import Spinner from '../spinner/Spinner';
 import Error from '../error/Error';
@@ -9,6 +8,7 @@ import Error from '../error/Error';
 import { useMarvelAPI } from '../../services/marvelAPI';
 import { stateMachine } from '../../helpers/stateMachine';
 import './charList.scss';
+import { CSSTransition } from 'react-transition-group';
 
 const CharList = ({ updateCharId }) => {
   const { state, getCharacters } = useMarvelAPI();
@@ -83,13 +83,7 @@ const CharList = ({ updateCharId }) => {
   return (
     <>
       {uploadFirs === stateMachine.load && (
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            marginTop: '25%',
-          }}
-        >
+        <div className="char__spinner-box">
           <Spinner />
         </div>
       )}
@@ -112,33 +106,43 @@ const CharList = ({ updateCharId }) => {
 
 const View = ({ chars, active, selectChar, changeOffset, state, isEnd }) => {
   const charsItems = useMemo(() => {
-    return chars.map(({ pictureUrl, name, id }) => (
-      <li
-        onClick={() => selectChar(id)}
-        onKeyDown={e => {
-          if (e.key === 'Enter') {
-            selectChar(id);
-          }
-        }}
-        key={id}
-        tabIndex="0"
-        className={clsx('char__item', +id === +active && 'char__item_selected')}
-      >
-        <img
-          loading="lazy"
-          src={pictureUrl}
-          alt={name + 'photo'}
-          style={
-            pictureUrl && pictureUrl.includes('image_not_available')
-              ? {
-                  objectFit: 'unset',
+    return (
+      <>
+        {chars.map(({ pictureUrl, name, id }) => (
+          <CSSTransition
+            classNames="char__item"
+            in={+id === +active}
+            timeout={200}
+            key={id}
+          >
+            <li
+              onClick={() => selectChar(id)}
+              onKeyDown={e => {
+                if (e.key === 'Enter') {
+                  selectChar(id);
                 }
-              : null
-          }
-        />
-        <div className="char__name">{name}</div>
-      </li>
-    ));
+              }}
+              tabIndex="0"
+              className={'char__item'}
+            >
+              <img
+                loading="lazy"
+                src={pictureUrl}
+                alt={name + 'photo'}
+                style={
+                  pictureUrl && pictureUrl.includes('image_not_available')
+                    ? {
+                        objectFit: 'unset',
+                      }
+                    : null
+                }
+              />
+              <div className="char__name">{name}</div>
+            </li>
+          </CSSTransition>
+        ))}
+      </>
+    );
   }, [chars, active, selectChar]);
 
   return (

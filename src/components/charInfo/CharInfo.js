@@ -8,6 +8,7 @@ import Skeleton from '../skeleton/Skeleton';
 import { useMarvelAPI } from '../../services/marvelAPI';
 
 import { stateMachine } from '../../helpers/stateMachine';
+import { Link } from 'react-router-dom';
 
 const CharInfo = ({ charId }) => {
   const { getCharacterByID, state } = useMarvelAPI();
@@ -27,7 +28,6 @@ const CharInfo = ({ charId }) => {
       console.log(e);
     }
   };
-
   return (
     <div className="char__info">
       {state === stateMachine.pending && <Skeleton />}
@@ -87,9 +87,11 @@ const View = ({ name, homepage, wiki, description, pictureUrl, comics }) => (
     {comics?.length > 0 ? (
       <ul className="char__comics-list">
         {[...comics]
-          .map(({ name }, i) => (
+          .map(({ name, resourceURI }, i) => (
             <li className="char__comics-item" key={i}>
-              {name}
+              <Link to={`comics/${resourceURI.split('/').reverse()[0]}`}>
+                {name}
+              </Link>
             </li>
           ))
           .splice(0, 10)}

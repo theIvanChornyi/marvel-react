@@ -49,7 +49,6 @@ export const useMarvelAPI = () => {
     const homepage = urls[0].url;
     const wiki = urls[1].url;
     const pictureUrl = `${thumbnail.path}.${thumbnail.extension}`;
-
     return {
       id,
       name,
