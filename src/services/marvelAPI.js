@@ -34,7 +34,6 @@ export const useMarvelAPI = () => {
     const data = await getData(
       `${BASE_URL}/comics/${id}?apikey=${REACT_APP_MARVEL_API_PUBLIC_KEY}`
     );
-    console.log(data);
     return _transformComics(data?.results[0]);
   };
 

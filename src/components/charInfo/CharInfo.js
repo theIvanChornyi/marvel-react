@@ -89,7 +89,13 @@ const View = ({ name, homepage, wiki, description, pictureUrl, comics }) => (
         {[...comics]
           .map(({ name, resourceURI }, i) => (
             <li className="char__comics-item" key={i}>
-              <Link to={`comics/${resourceURI.split('/').reverse()[0]}`}>
+              <Link
+                to={
+                  resourceURI
+                    ? `comics/${resourceURI?.split('/').reverse()[0]}`
+                    : '*'
+                }
+              >
                 {name}
               </Link>
             </li>

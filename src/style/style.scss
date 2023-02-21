@@ -70,6 +70,13 @@ main {
     animation: pulse 1.5s ease-in-out .5s infinite
 }
 
+::-webkit-scrollbar{
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
 @keyframes pulse {
     0% {
         opacity: 1

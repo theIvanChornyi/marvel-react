@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { createRef, useCallback, useEffect, useMemo, useState } from 'react';
 import debounce from 'lodash.debounce';
 import PropTypes from 'prop-types';
 
@@ -108,39 +108,44 @@ const View = ({ chars, active, selectChar, changeOffset, state, isEnd }) => {
   const charsItems = useMemo(() => {
     return (
       <>
-        {chars.map(({ pictureUrl, name, id }) => (
-          <CSSTransition
-            classNames="char__item"
-            in={+id === +active}
-            timeout={200}
-            key={id}
-          >
-            <li
-              onClick={() => selectChar(id)}
-              onKeyDown={e => {
-                if (e.key === 'Enter') {
-                  selectChar(id);
-                }
-              }}
-              tabIndex="0"
-              className={'char__item'}
+        {chars.map(({ pictureUrl, name, id }) => {
+          const nodeRef = createRef(null);
+          return (
+            <CSSTransition
+              nodeRef={nodeRef}
+              classNames="char__item"
+              in={+id === +active}
+              timeout={200}
+              key={id}
             >
-              <img
-                loading="lazy"
-                src={pictureUrl}
-                alt={name + 'photo'}
-                style={
-                  pictureUrl && pictureUrl.includes('image_not_available')
-                    ? {
-                        objectFit: 'unset',
-                      }
-                    : null
-                }
-              />
-              <div className="char__name">{name}</div>
-            </li>
-          </CSSTransition>
-        ))}
+              <li
+                ref={nodeRef}
+                onClick={() => selectChar(id)}
+                onKeyDown={e => {
+                  if (e.key === 'Enter') {
+                    selectChar(id);
+                  }
+                }}
+                tabIndex="0"
+                className={'char__item'}
+              >
+                <img
+                  loading="lazy"
+                  src={pictureUrl}
+                  alt={name + 'photo'}
+                  style={
+                    pictureUrl && pictureUrl.includes('image_not_available')
+                      ? {
+                          objectFit: 'unset',
+                        }
+                      : null
+                  }
+                />
+                <div className="char__name">{name}</div>
+              </li>
+            </CSSTransition>
+          );
+        })}
       </>
     );
   }, [chars, active, selectChar]);
