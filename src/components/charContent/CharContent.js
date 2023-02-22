@@ -2,6 +2,7 @@ import { useCallback, useState } from 'react';
 import CharInfo from '../charInfo/CharInfo';
 import CharList from '../charList/CharList';
 import ErrorBoundary from '../errorBoundary/ErrorBoundary';
+import SearchBar from '../searchBar/SearchBar';
 import './charContent.scss';
 
 const CharContent = () => {
@@ -16,9 +17,14 @@ const CharContent = () => {
       <ErrorBoundary>
         <CharList updateCharId={updateCharId} />
       </ErrorBoundary>
-      <ErrorBoundary>
-        <CharInfo charId={charId} />
-      </ErrorBoundary>
+      <div className="char__info-wrapper">
+        <ErrorBoundary>
+          <CharInfo charId={charId} />
+        </ErrorBoundary>
+        <ErrorBoundary>
+          <SearchBar />
+        </ErrorBoundary>
+      </div>
     </div>
   );
 };

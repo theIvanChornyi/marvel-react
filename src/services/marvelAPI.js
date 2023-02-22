@@ -13,6 +13,17 @@ export const useMarvelAPI = () => {
 
     return await Promise.all(data?.results.map(_transformChar));
   };
+  const getCharacterByName = async name => {
+    const data = await getData(
+      `${BASE_URL}/characters?apikey=${REACT_APP_MARVEL_API_PUBLIC_KEY}&nameStartsWith=${name}`
+    );
+    const char = data?.results[0];
+    if (char) {
+      return _transformChar(char);
+    } else {
+      return null;
+    }
+  };
 
   const getCharacterByID = async id => {
     const data = await getData(
@@ -83,10 +94,11 @@ export const useMarvelAPI = () => {
   };
 
   return {
-    getComicsData,
-    getCharacterByID,
-    getComicById,
     getCharacters,
+    getCharacterByName,
+    getCharacterByID,
+    getComicsData,
+    getComicById,
     state,
     error,
   };

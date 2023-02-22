@@ -1,28 +1,28 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useLocation, useParams } from 'react-router-dom';
 import Error from '../../components/error/Error';
-import ErrorBoundary from '../../components/errorBoundary/ErrorBoundary';
-import SingleComic from '../../components/singleComic/SingleComic';
-import Spinner from '../../components/spinner/Spinner';
 import AppBanner from '../../components/appBanner/AppBanner';
-
+import ErrorBoundary from '../../components/errorBoundary/ErrorBoundary';
+import SingleChar from '../../components/singleChar/SingleChar';
+import Spinner from '../../components/spinner/Spinner';
 import { stateMachine } from '../../helpers/stateMachine';
 import { useMarvelAPI } from '../../services/marvelAPI';
 
-const SingleComicPage = () => {
+const SingleCharPage = () => {
   const { id } = useParams();
-  const { state, getComicById } = useMarvelAPI();
-  const [comic, setComic] = useState(null);
+  const { state, getCharacterByID } = useMarvelAPI();
+  const { state: charFromHomePage } = useLocation();
 
+  const [char, setChar] = useState(() => charFromHomePage || null);
   useEffect(() => {
-    getComicsInfo();
+    if (!char) getComicsInfo();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const getComicsInfo = async () => {
     const validId = Number.parseInt(id);
-    const resp = await getComicById(validId);
-    setComic(resp);
+    const resp = await getCharacterByID(validId);
+    setChar(resp);
   };
 
   return (
@@ -40,13 +40,13 @@ const SingleComicPage = () => {
           <Spinner />
         </div>
       )}
-      {state === stateMachine.success && (
+      {(state === stateMachine.success || char) && (
         <ErrorBoundary>
-          <SingleComic {...{ comic }} />
+          <SingleChar {...{ char }} />
         </ErrorBoundary>
       )}
     </>
   );
 };
 
-export default SingleComicPage;
+export default SingleCharPage;

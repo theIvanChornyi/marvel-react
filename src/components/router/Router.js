@@ -7,9 +7,11 @@ import { SwitchTransition } from 'react-transition-group';
 const ComicsPage = lazy(() => import('../../pages/comicsPage/ComicsPage'));
 const Page404 = lazy(() => import('../../pages/Page404/Page404'));
 const HomePage = lazy(() => import('../../pages/homePage/HomePage'));
-
 const SingleComicPage = lazy(() =>
   import('../../pages/singleComicPage/SingleComicPage')
+);
+const SingleCharPage = lazy(() =>
+  import('../../pages/singleCharPage/SingleCharPage')
 );
 
 const AplicationRouter = () => {
@@ -18,6 +20,7 @@ const AplicationRouter = () => {
       <SwitchTransition component={null}>
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/char/:id" element={<SingleCharPage />} />
           <Route path="/comics" element={<ComicsPage />} />
           <Route path="/comics/:id" element={<SingleComicPage />} />
           <Route path="*" element={<Page404 />} />

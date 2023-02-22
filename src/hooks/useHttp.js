@@ -11,6 +11,7 @@ export const useHttp = () => {
       const resp = await fetch(url);
       const { data } = await resp.json();
       setState(stateMachine.success);
+
       return data;
     } catch (error) {
       setError(error);
