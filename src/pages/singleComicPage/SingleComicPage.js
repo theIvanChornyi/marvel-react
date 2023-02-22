@@ -8,6 +8,7 @@ import AppBanner from '../../components/appBanner/AppBanner';
 
 import { stateMachine } from '../../helpers/stateMachine';
 import { useMarvelAPI } from '../../services/marvelAPI';
+import { Helmet } from 'react-helmet';
 
 const SingleComicPage = () => {
   const { id } = useParams();
@@ -27,6 +28,10 @@ const SingleComicPage = () => {
 
   return (
     <>
+      <Helmet>
+        <meta name="description" content={`Info about ${comic?.title}`} />
+        <title>{`${comic?.title} info`}</title>
+      </Helmet>
       <AppBanner />
       {state === stateMachine.rejected && <Error />}
       {state === stateMachine.load && (

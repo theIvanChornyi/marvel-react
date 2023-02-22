@@ -7,6 +7,7 @@ import SingleChar from '../../components/singleChar/SingleChar';
 import Spinner from '../../components/spinner/Spinner';
 import { stateMachine } from '../../helpers/stateMachine';
 import { useMarvelAPI } from '../../services/marvelAPI';
+import { Helmet } from 'react-helmet';
 
 const SingleCharPage = () => {
   const { id } = useParams();
@@ -27,6 +28,14 @@ const SingleCharPage = () => {
 
   return (
     <>
+      <Helmet>
+        <meta
+          name="description"
+          content={`Info about ${char?.name} character`}
+        />
+        <title>{`${char?.name} page`}</title>
+      </Helmet>
+
       <AppBanner />
       {state === stateMachine.rejected && <Error />}
       {state === stateMachine.load && (
